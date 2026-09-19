@@ -5,10 +5,15 @@
 > push to `main`, the [Template Bootstrap](.github/workflows/template-bootstrap.yml)
 > workflow replaces the `GITHUB_USERNAME`, `REPO_SLUG`, `PROJECT_NAME`, and
 > `FULL_NAME` placeholders across every file, strips the template notices, opens a
-> checklist issue covering the parts that still need a human, and then deletes
-> itself. It commits directly when repository rules allow that; otherwise it
-> preserves the changes on a setup branch and opens a pull request. If repository
-> policy blocks automated pull requests, the checklist issue links to that branch.
+> checklist issue covering the parts that still need a human, applies the
+> labels from `.github/labels.yml`, and then deletes itself.
+>
+> It commits directly when repository rules allow that; otherwise it preserves
+> the changes on a setup branch and opens a pull request, and if repository
+> policy blocks automated pull requests too, the checklist issue links to that
+> branch. `GITHUB_TOKEN` is not always permitted to write under
+> `.github/workflows`; when it is not, the bootstrap applies everything else,
+> disables itself, and asks you to delete its file by hand.
 >
 > If it did not run, start it by hand from **Actions → Template Bootstrap → Run
 > workflow**. To do it manually instead, replace those four placeholders yourself
@@ -136,7 +141,6 @@ Together, we can make PROJECT_NAME **better**!
 ## Contributing
 
 First off, thanks for taking the time to contribute! Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make will benefit everybody else and are **greatly appreciated**.
-
 
 Please read [our contribution guidelines](docs/CONTRIBUTING.md), and thank you for being involved!
 

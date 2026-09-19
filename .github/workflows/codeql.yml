@@ -3,9 +3,16 @@
 # Security for private repositories. It is manual-only in the template so a new,
 # empty repository does not begin with a failing workflow.
 #
-# After code has landed, configure the matrix below for the languages and build
-# modes your project uses, then uncomment the automatic triggers below. Languages
-# are auto-detected when the matrix remains commented. For example:
+# GitHub now recommends the UI-based "default setup" (Settings -> Code security
+# -> Code scanning) for most repositories: it picks the languages, keeps the
+# queries current, and needs no workflow file at all. Prefer it unless you need
+# a custom build, custom query packs, or a non-standard matrix -- and if you do
+# enable it, delete this workflow rather than running both.
+#
+# To keep this advanced setup instead: after code has landed, configure the
+# matrix below for the languages and build modes your project uses, then
+# uncomment the automatic triggers. Languages are auto-detected when the matrix
+# remains commented. For example:
 #   language: [javascript-typescript, python]
 # See https://docs.github.com/code-security/code-scanning for the current list.
 

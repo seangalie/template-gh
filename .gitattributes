@@ -10,8 +10,11 @@
 # \--------------------------------------------------------------------------/
 # TEMPLATE-NOTICE:END
 
-# Normalize all text files to LF in the repository
-*           text=auto
+# Normalize all text files to LF in the repository AND on checkout, so that
+# every platform sees the same bytes. Without the explicit eol=lf, a Windows
+# checkout would convert these back to CRLF and contradict .editorconfig.
+# The CRLF exceptions are listed further down.
+*           text=auto eol=lf
 *.sh        text eol=lf
 *.bash      text eol=lf
 *.py        text eol=lf
@@ -34,16 +37,21 @@
 *.jsx       text eol=lf diff=javascript
 *.tsx       text eol=lf diff=javascript
 
-# Files that must use CRLF on checkout
+# Files that must use CRLF on checkout. Git attribute patterns use
+# gitignore-style matching and do NOT expand {a,b} braces, so extensions that
+# are commonly written in either case are spelled as character classes.
 *.csv       text eol=crlf
 *.ps1       text eol=crlf
+*.psm1      text eol=crlf
+*.psd1      text eol=crlf
 *.[cC][mM][dD]  text eol=crlf
 *.[bB][aA][tT]  text eol=crlf
 
 # These files are text and should have LF line endings on checkout
-.gitattributes  text
-.gitignore      text
-.gitmodules     text
+.gitattributes  text eol=lf
+.gitignore      text eol=lf
+.gitmodules     text eol=lf
+.editorconfig   text eol=lf
 
 # Fix syntax highlighting on GitHub/Forgejo to allow comments
 .vscode/*.json  linguist-language=JSON-with-Comments
@@ -54,7 +62,7 @@ package-lock.json   text eol=lf -diff
 pnpm-lock.yaml      text eol=lf -diff
 
 # Other Text-based Assets
-*.svg       text
+*.svg       text eol=lf
 
 # Images
 *.png       binary
@@ -108,3 +116,4 @@ pnpm-lock.yaml      text eol=lf -diff
 
 # Text files where line endings should be preserved
 *.patch -text
+*.diff  -text

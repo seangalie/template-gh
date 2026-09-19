@@ -29,7 +29,9 @@ jobs:
 
             If you encounter this same issue, please open a new issue and refer
             to this closed one.
-          pr-inactive-days: "1"
+          # Long enough that a merged pull request can still be discussed, and
+          # short enough to keep drive-by comments off old work.
+          pr-inactive-days: "30"
           pr-lock-reason: ""
           pr-comment: >
             Pull Request closed and locked due to lack of activity.
@@ -38,3 +40,7 @@ jobs:
             this method: https://stackoverflow.com/a/14969986
 
             Then open a new PR, referencing this closed PR in your message.
+          # Stated explicitly: this action processes discussions by default
+          # (at 365 days), which is why the job holds `discussions: write`.
+          # Set `process-only: issues, prs` to leave discussions alone.
+          discussion-inactive-days: "365"

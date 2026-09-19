@@ -34,6 +34,8 @@ indent_style = tab
 # Two trailing spaces are a hard line break in Markdown.
 trim_trailing_whitespace = false
 
-# These must keep CRLF on checkout -- see .gitattributes.
-[*.{csv,ps1,cmd,bat}]
+# These must keep CRLF on checkout -- see .gitattributes. EditorConfig does
+# expand {a,b} braces; git attribute patterns do not, so the two files spell
+# the same rule differently on purpose.
+[*.{csv,ps1,psm1,psd1,cmd,bat}]
 end_of_line = crlf
