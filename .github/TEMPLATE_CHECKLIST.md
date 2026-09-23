@@ -9,10 +9,11 @@ author placeholders. The items below still need a human.
 - [ ] Fill in the development environment steps in `docs/CONTRIBUTING.md`.
 - [ ] Replace `docs/logo.svg` and `docs/screenshot.png`.
 - [ ] Start filling in `CHANGELOG.md`.
+- [ ] Replace the placeholder step in `.github/workflows/ci.yml` with this project's real build and test steps.
 
 ### Contact and policy
 
-- [ ] Set a real contact method in `docs/CODE_OF_CONDUCT.md` (it currently reads `[INSERT CONTACT METHOD]`).
+- [ ] In `docs/CODE_OF_CONDUCT.md`, replace the `[NOTE: describe your means of reporting here.]` placeholder with a real contact method, and either adopt the enforcement ladder under **Addressing and Repairing Harm** or replace it with your own, then delete the `[NOTE: ...]` paragraph above it.
 - [ ] Review the supported-versions table in `docs/SECURITY.md`.
 - [ ] Add your copyright notice using the appendix at the end of `LICENSE` — in source headers or a `NOTICE` file. Leave the license text itself unmodified.
 
@@ -23,7 +24,7 @@ author placeholders. The items below still need a human.
 - [ ] Enable **Private vulnerability reporting** under Settings → Security.
 - [ ] Review `.github/CODEOWNERS`. Personal repositories get the owner account automatically; organization repositories must replace and uncomment the `@org/team-name` example, and that team needs write access before GitHub will honor it.
 - [ ] Confirm the labels from `.github/labels.yml` were applied. The bootstrap starts the **Sync labels** workflow; if it did not run, start it from the Actions tab. The **PR Labels** check fails until those labels exist.
-- [ ] Set up branch protection or a ruleset on the default branch. If you require pull requests, also enable Settings → Actions → **Allow GitHub Actions to create and approve pull requests**, or automation cannot open PRs against it.
+- [ ] Set up branch protection or a ruleset on the default branch, and require the **🧪 Build and test** and **🏭 Verify** (PR Labels) checks once CI does real work. If you require pull requests, also enable Settings → Actions → **Allow GitHub Actions to create and approve pull requests**, or automation cannot open PRs against it.
 - [ ] Turn on code scanning. GitHub's **default setup** (Settings → Code security) is the recommended path for most projects — enable it and delete `.github/workflows/codeql.yml`. Keep that workflow only if you need a custom build or query packs, in which case configure its languages and uncomment its automatic triggers.
 - [ ] Uncomment the matching ecosystem in `.github/dependabot.yml`.
 - [ ] Review `.gitignore` and `.gitattributes` for this project's language.
