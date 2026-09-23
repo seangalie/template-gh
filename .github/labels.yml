@@ -57,13 +57,18 @@
   description: "A request for support or further information about this project."
 
 # These two match GitHub's default label names, which the repository's
-# /contribute page and good-first-issue aggregators look for.
+# /contribute page and good-first-issue aggregators look for. The aliases are
+# their names in earlier versions of this template: a sync renames an old label
+# in place, or, if the new one already exists, moves its issues and PRs across
+# and deletes the old one.
 - name: "good first issue"
   color: 0e8a16
   description: "Good first issue for people wanting to contribute to this project."
+  aliases: ["beginner-friendly"]
 - name: "help wanted"
   color: 0e8a16
   description: "We need some extra helping hands or expertise in order to resolve this!"
+  aliases: ["help-wanted"]
 
 - name: "priority-critical"
   color: ee0701
