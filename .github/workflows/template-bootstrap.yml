@@ -312,12 +312,13 @@ jobs:
             fi
           fi
 
-          if [ "$pushed_branch" = "$BASE_BRANCH" ]; then
-            # Apply .github/labels.yml now rather than leaving it to a manual
-            # step: the PR Labels check needs those labels to exist.
-            gh workflow run labels.yml --ref "$BASE_BRANCH" \
-              || echo "::warning::Could not start the Sync labels workflow; run it from the Actions tab."
-          fi
+          # Apply .github/labels.yml now rather than leaving it to a manual
+          # step: the PR Labels check needs those labels to exist. This runs
+          # on the pull request path too -- the template's labels.yml is
+          # already on the default branch, and merging the bootstrap pull
+          # request does not touch it, so its push trigger would never fire.
+          gh workflow run labels.yml --ref "$BASE_BRANCH" \
+            || echo "::warning::Could not start the Sync labels workflow; run it from the Actions tab."
 
           if [ "$workflow_kept" = true ]; then
             note="GitHub Actions could not delete \`.github/workflows/template-bootstrap.yml\` itself, because \`GITHUB_TOKEN\` may not write under \`.github/workflows\`. Everything else was applied. Please delete that file by hand."
