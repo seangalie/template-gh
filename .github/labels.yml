@@ -13,7 +13,7 @@
   description: "Solely about the documentation of the project."
 - name: "enhancement"
   color: 1d76db
-  description: "Enhancement of the code, not introducing new features."
+  description: "A request or change that improves the project, including new features."
 - name: "refactor"
   color: 1d76db
   description: "Updating the code with simpler, easier to understand or more efficient syntax or methods, but not introducing new features."
@@ -56,10 +56,12 @@
   color: d876e3
   description: "A request for support or further information about this project."
 
-- name: "beginner-friendly"
+# These two match GitHub's default label names, which the repository's
+# /contribute page and good-first-issue aggregators look for.
+- name: "good first issue"
   color: 0e8a16
   description: "Good first issue for people wanting to contribute to this project."
-- name: "help-wanted"
+- name: "help wanted"
   color: 0e8a16
   description: "We need some extra helping hands or expertise in order to resolve this!"
 

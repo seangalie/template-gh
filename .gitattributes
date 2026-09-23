@@ -25,7 +25,7 @@
 *.yaml      text eol=lf
 *.yml       text eol=lf
 *.json      text eol=lf diff=json
-*.md        text eol=lf diff=markdown linguist-detectable
+*.md        text eol=lf diff=markdown
 *.txt       text eol=lf
 *.htm       text eol=lf diff=html
 *.html      text eol=lf diff=html

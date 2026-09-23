@@ -16,6 +16,10 @@ updates:
       day: "monday"
       time: "06:00"
     open-pull-requests-limit: 5
+    # Wait a week before proposing a new release, so a compromised or broken
+    # version has time to be caught and yanked upstream first.
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
       - "ci"
