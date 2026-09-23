@@ -41,7 +41,10 @@ nohup.out
 __MACOSX/
 .AppleDouble
 .LSOverride
-Icon?
+# Custom folder icons are named "Icon" plus a carriage return. The brackets
+# below hold a literal CR (invisible in most editors): "Icon?" would also
+# ignore folders such as Icons/, and "Icon[\r]" matches "Iconr" instead.
+Icon[]
 
 # Thumbnails & Resource forks
 ._*
@@ -129,7 +132,7 @@ $RECYCLE.BIN/
 # .gitignore for Agents and Assistants
 # ------------------------------------
 
-# These files are often intentionally commited and shared within the repository
+# These files are often intentionally committed and shared within the repository
 # to assist teams working on projects collaboratively with agentic tools.  Only
 # uncomment the examples below if they need to remain local-only instructions or
 # configuration files.
@@ -165,8 +168,7 @@ CLAUDE.local.md
 # .aiderignore
 
 # Cursor AI
-.cursorignore
-.cursorindexingignore
+# .cursorignore and .cursorindexingignore are normally committed, like .gitignore
 # .cursorrules
 # .cursor/
 # .cursor.json
@@ -219,8 +221,7 @@ gemini-debug.log
 # Built Visual Studio Code Extensions
 *.vsix
 
-# Ignore all local history of files
-.history
+# Ionide (F#) workspace state
 .ionide
 
 # -----------------------------

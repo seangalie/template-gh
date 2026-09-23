@@ -18,10 +18,10 @@ indent_size = 2
 [*.{js,jsx,ts,tsx,css,scss,html,htm,svg}]
 indent_size = 2
 
-[*.{sh,bash}]
+[*.{sh,bash,rb}]
 indent_size = 2
 
-[*.{py,rb,go}]
+[*.{py,go}]
 indent_size = 4
 
 [*.go]
