@@ -30,7 +30,9 @@ concurrency:
 jobs:
   bootstrap:
     name: 🧰 Personalize this repository
-    if: ${{ !github.event.repository.is_template }}
+    # Forks are skipped too: someone forking the template to contribute to it
+    # must not have their copy personalized out from under them.
+    if: ${{ !github.event.repository.is_template && !github.event.repository.fork }}
     runs-on: ubuntu-latest
     permissions:
       actions: write
@@ -45,7 +47,8 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       PLACEHOLDERS: GITHUB_USERNAME|REPO_SLUG|PROJECT_NAME|FULL_NAME
     steps:
-      - name: ⤵️ Check out code from GitHub
+      # Credentials are kept on purpose: this job pushes its commits back.
+      - name: ⤵️ Check out code from GitHub # zizmor: ignore[artipacked]
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: 🔎 Check whether bootstrapping is still needed
@@ -153,6 +156,15 @@ jobs:
             cat "${RUNNER_TEMP}/checklist.md"
           } >> "$GITHUB_STEP_SUMMARY"
 
+          # Do not depend on the separate label-sync workflow winning a race:
+          # "maintenance" is not one of GitHub's default labels, and both the
+          # checklist issue and a fallback bootstrap pull request carry it.
+          gh label create "maintenance" \
+            --color "2af79e" \
+            --description "Generic maintenance tasks." \
+            --force \
+            || echo "::warning::Could not create the maintenance label."
+
           # Issues can be turned off entirely. That must not cost the
           # repository the rest of its personalization, so keep the checklist
           # as a file instead and carry on.
@@ -162,13 +174,6 @@ jobs:
             echo "::warning::Issues are disabled, so the setup checklist was not filed as an issue. It is in this run's summary, and .github/TEMPLATE_CHECKLIST.md has been kept in the repository."
             exit 0
           fi
-
-          # Do not depend on the separate label-sync workflow winning a race:
-          # "maintenance" is not one of GitHub's default labels.
-          gh label create "maintenance" \
-            --color "2af79e" \
-            --description "Generic maintenance tasks." \
-            --force
 
           # A failed push leaves this workflow in place, so make retries safe.
           existing_issue="$(
@@ -223,12 +228,14 @@ jobs:
             removal_committed=true
           fi
 
-          # Pushes HEAD to the named branch. If the push is refused only
-          # because the token may not write under .github/workflows, the
-          # self-removal commit is dropped and the push retried without it.
+          # Pushes HEAD to the named branch; any further arguments are passed
+          # to git push. If the push is refused only because the token may not
+          # write under .github/workflows, the self-removal commit is dropped
+          # and the push retried without it.
           push_head() {
             local target="$1" output
-            if output="$(git push origin "HEAD:refs/heads/${target}" 2>&1)"; then
+            shift
+            if output="$(git push "$@" origin "HEAD:refs/heads/${target}" 2>&1)"; then
               printf '%s\n' "$output"
               return 0
             fi
@@ -239,7 +246,7 @@ jobs:
               git reset --hard HEAD~1
               removal_committed=false
               workflow_kept=true
-              if output="$(git push origin "HEAD:refs/heads/${target}" 2>&1)"; then
+              if output="$(git push "$@" origin "HEAD:refs/heads/${target}" 2>&1)"; then
                 printf '%s\n' "$output"
                 return 0
               fi
@@ -260,8 +267,25 @@ jobs:
           else
             # Protected default branches commonly reject direct writes.
             # Preserve the generated commit and propose it via pull request.
-            setup_branch="template-bootstrap-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-            if ! push_head "$setup_branch"; then
+            #
+            # The branch name is fixed so that later pushes to the default
+            # branch, which rerun this workflow until the pull request is
+            # merged, find the open pull request instead of opening another.
+            setup_branch="template-bootstrap"
+            open_pr="$(gh pr list \
+              --head "$setup_branch" \
+              --base "$BASE_BRANCH" \
+              --state open \
+              --json url \
+              --jq '.[0].url // empty')"
+            if [ -n "$open_pr" ]; then
+              echo "The bootstrap pull request is already open: ${open_pr}"
+              exit 0
+            fi
+
+            # No open pull request, so anything left on the branch is from an
+            # earlier attempt that was closed unmerged; replace it.
+            if ! push_head "$setup_branch" --force; then
               echo "::error::The bootstrap changes could not be pushed to ${BASE_BRANCH} or to ${setup_branch}."
               exit 1
             fi
@@ -274,6 +298,11 @@ jobs:
               --body "The default branch rejected the bootstrap commit. This pull request applies the generated repository personalization without bypassing branch protection. If required checks are missing, close and reopen this pull request so GitHub emits a user-initiated pull-request event." \
               2>&1)"; then
               echo "Opened bootstrap pull request: ${pr_result}"
+              # The PR Labels check requires a label. Added separately so that
+              # a missing label cannot stop the pull request being opened.
+              # gh prints the pull request URL last, after any warnings.
+              gh pr edit "${pr_result##*$'\n'}" --add-label "maintenance" \
+                || echo "::warning::Could not label the bootstrap pull request; add the maintenance label by hand."
             else
               echo "${pr_result}" >&2
               compare_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/${BASE_BRANCH}...${setup_branch}?expand=1"
